@@ -37,36 +37,54 @@
 
     <!-- Controls -->
     <section class="fixed top-[64px] w-full z-40 p-4 bg-white shadow-md">
-      <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
-        <input
-          id="noteTitle"
-          placeholder="Note Title"
-          class="border p-2 rounded w-full md:w-1/4"
-        />
-        <input
-          id="noteTag"
-          placeholder="Tag"
-          class="border p-2 rounded w-full md:w-1/4"
-        />
-        <button
-          onclick="addNote()"
-          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
-        >
-          <i class="fa fa-plus mr-1"></i>Add Note
-        </button>
+      <div class="flex flex-col gap-2">
+        <!-- Search always visible -->
         <input
           id="searchInput"
           oninput="searchNotes()"
           placeholder="Search by title or tag..."
-          class="ml-auto border p-2 rounded w-full md:w-1/4"
+          class="border p-2 rounded w-full"
         />
+
+        <!-- Toggle button for small screens -->
+        <div class="flex md:hidden justify-end">
+          <button
+            onclick="toggleAddForm()"
+            class="text-3xl bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700"
+          >
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+
+        <!-- Add Note Form -->
+        <div
+          id="addForm"
+          class="flex-col gap-2 hidden md:flex md:flex-row md:items-center"
+        >
+          <input
+            id="noteTitle"
+            placeholder="Note Title"
+            class="border p-2 rounded w-full md:w-1/4"
+          />
+          <input
+            id="noteTag"
+            placeholder="Tag"
+            class="border p-2 rounded w-full md:w-1/4"
+          />
+          <button
+            onclick="addNote()"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
+          >
+            <i class="fa fa-plus mr-1"></i>Add Note
+          </button>
+        </div>
       </div>
     </section>
 
     <!-- Notes Container -->
     <main
       id="notesContainer"
-      class="mt-[285px] lg:mt-[155px] p-4 flex flex-wrap gap-4 justify-start items-start"
+      class="mt-[310px] lg:mt-[200px] p-4 flex flex-wrap gap-4 justify-start items-start"
     ></main>
 
     <!-- Settings Modal -->
@@ -122,6 +140,11 @@
         modal.classList.toggle("flex");
       }
 
+      function toggleAddForm() {
+        const form = document.getElementById("addForm");
+        form.classList.toggle("hidden");
+      }
+
       function applySettings() {
         const color = document.getElementById("bgColorPicker").value;
         document.body.style.backgroundColor = color;
@@ -149,6 +172,9 @@
 
         document.getElementById("noteTitle").value = "";
         document.getElementById("noteTag").value = "";
+
+        // Hide the form again on small screens
+        if (window.innerWidth < 768) toggleAddForm();
       }
 
       function random(min, max) {
@@ -171,26 +197,26 @@
           div.style.background = note.color;
 
           div.innerHTML = `
-            <div class="flex justify-between items-center mb-2">
-              <div>
-                <h3 class="text-lg font-bold text-black">${note.title}</h3>
-                <p class="text-sm text-black">#${note.tag || "untagged"}</p>
-              </div>
-              <div class="flex gap-2 items-center action-buttons">
-                <button onclick="downloadSingleNote(${
-                  note.id
-                })" class="text-blue-600 hover:text-blue-800"><i class="fas fa-download"></i></button>
-                <button onclick="deleteNote(${
-                  note.id
-                })" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
-              </div>
+          <div class="flex justify-between items-center mb-2">
+            <div>
+              <h3 class="text-lg font-bold text-black">${note.title}</h3>
+              <p class="text-sm text-black">#${note.tag || "untagged"}</p>
             </div>
-            <div id="content-${note.id}" contenteditable="true" 
-              class="rich-editor bg-white text-gray-900 rounded p-2 border flex-grow shadow-inner" 
-              oninput="updateContent(${note.id}); autoGrow('content-${
+            <div class="flex gap-2 items-center action-buttons">
+              <button onclick="downloadSingleNote(${
+                note.id
+              })" class="text-blue-600 hover:text-blue-800"><i class="fas fa-download"></i></button>
+              <button onclick="deleteNote(${
+                note.id
+              })" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+          <div id="content-${note.id}" contenteditable="true"
+            class="rich-editor bg-white text-gray-900 rounded p-2 border flex-grow shadow-inner"
+            oninput="updateContent(${note.id}); autoGrow('content-${
             note.id
           }')">${note.content}</div>
-          `;
+        `;
 
           notesContainer.appendChild(div);
           setTimeout(() => autoGrow(`content-${note.id}`), 0);
@@ -225,8 +251,6 @@
       function downloadSingleNote(id) {
         const noteCard = document.querySelector(`[data-id='${id}']`);
         const buttons = noteCard.querySelector(".action-buttons");
-
-        // Hide buttons/icons before download
         buttons.style.display = "none";
 
         html2canvas(noteCard, { scale: 2, useCORS: true }).then((canvas) => {
@@ -234,8 +258,6 @@
           link.download = `note-${id}.png`;
           link.href = canvas.toDataURL("image/png");
           link.click();
-
-          // Show buttons back
           buttons.style.display = "flex";
         });
       }
