@@ -4,12 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmartNotes</title>
+
+    <!-- TailwindCSS and Font Awesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- Favicon as Font Awesome icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM320 360c0 4.4-3.6 8-8 8H136c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h176c4.4 0 8 3.6 8 8v16zm32-96c0 4.4-3.6 8-8 8H104c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h240c4.4 0 8 3.6 8 8v16zm0-96c0 4.4-3.6 8-8 8H104c-4.4 0-8-3.6-8-8v-16c0-4.4 3.6-8 8-8h240c4.4 0 8 3.6 8 8v16z'/%3E%3C/svg%3E" />
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="manifest.webmanifest" />
+
+    <!-- Offline Styles -->
     <style>
       .rich-editor {
         min-height: 100px;
@@ -23,14 +30,9 @@
   </head>
   <body class="min-h-screen bg-gray-100 flex flex-col pb-16">
     <!-- Header -->
-    <header
-      class="fixed top-0 w-full z-50 bg-blue-700 text-white p-4 flex justify-between items-center shadow"
-    >
+    <header class="fixed top-0 w-full z-50 bg-blue-700 text-white p-4 flex justify-between items-center shadow">
       <h1 class="text-2xl font-bold">SmartNotes</h1>
-      <button
-        onclick="toggleSettings()"
-        class="bg-blue-900 px-3 py-1 rounded hover:bg-blue-800"
-      >
+      <button onclick="toggleSettings()" class="bg-blue-900 px-3 py-1 rounded hover:bg-blue-800">
         ⚙️ Settings
       </button>
     </header>
@@ -39,42 +41,20 @@
     <section class="fixed top-[64px] w-full z-40 p-4 bg-white shadow-md">
       <div class="flex flex-col gap-2">
         <!-- Search always visible -->
-        <input
-          id="searchInput"
-          oninput="searchNotes()"
-          placeholder="Search by title or tag..."
-          class="border p-2 rounded w-full"
-        />
+        <input id="searchInput" oninput="searchNotes()" placeholder="Search by title or tag..." class="border p-2 rounded w-full" />
 
         <!-- Toggle button for small screens -->
         <div class="flex md:hidden justify-end">
-          <button
-            onclick="toggleAddForm()"
-            class="text-3xl bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700"
-          >
+          <button onclick="toggleAddForm()" class="text-3xl bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700">
             <i class="fa fa-plus"></i>
           </button>
         </div>
 
         <!-- Add Note Form -->
-        <div
-          id="addForm"
-          class="flex-col gap-2 hidden md:flex md:flex-row md:items-center"
-        >
-          <input
-            id="noteTitle"
-            placeholder="Note Title"
-            class="border p-2 rounded w-full md:w-1/4"
-          />
-          <input
-            id="noteTag"
-            placeholder="Tag"
-            class="border p-2 rounded w-full md:w-1/4"
-          />
-          <button
-            onclick="addNote()"
-            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto"
-          >
+        <div id="addForm" class="flex-col gap-2 hidden md:flex md:flex-row md:items-center">
+          <input id="noteTitle" placeholder="Note Title" class="border p-2 rounded w-full md:w-1/4" />
+          <input id="noteTag" placeholder="Tag" class="border p-2 rounded w-full md:w-1/4" />
+          <button onclick="addNote()" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full md:w-auto">
             <i class="fa fa-plus mr-1"></i>Add Note
           </button>
         </div>
@@ -82,41 +62,20 @@
     </section>
 
     <!-- Notes Container -->
-    <main
-      id="notesContainer"
-      class="mt-[200px] lg:mt-[200px] p-4 flex flex-wrap gap-4 justify-start items-start"
-    ></main>
+    <main id="notesContainer" class="mt-[200px] p-4 flex flex-wrap gap-4 justify-start items-start"></main>
 
     <!-- Settings Modal -->
-    <div
-      id="settingsModal"
-      class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-10"
-    >
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-10">
       <div class="bg-white rounded-lg p-6 w-96 shadow-xl">
         <h2 class="text-lg font-semibold mb-4">Settings</h2>
         <label class="block mb-2 font-medium">Background Color:</label>
-        <input
-          type="color"
-          id="bgColorPicker"
-          class="w-full h-10 border rounded mb-4"
-        />
-        <button
-          onclick="applySettings()"
-          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Apply
-        </button>
-        <button
-          onclick="toggleSettings()"
-          class="ml-2 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
-        >
-          Close
-        </button>
+        <input type="color" id="bgColorPicker" class="w-full h-10 border rounded mb-4" />
+        <button onclick="applySettings()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Apply</button>
+        <button onclick="toggleSettings()" class="ml-2 bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">Close</button>
       </div>
     </div>
- 
 
-    <!-- JavaScript -->
+    <!-- JavaScript Logic -->
     <script>
       let notes = JSON.parse(localStorage.getItem("notes")) || [];
       const notesContainer = document.getElementById("notesContainer");
@@ -126,17 +85,22 @@
         if (bgColor) document.body.style.backgroundColor = bgColor;
         document.getElementById("bgColorPicker").value = bgColor || "#f3f4f6";
         renderNotes();
+
+        // Register Service Worker
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("service-worker.js").then(() => {
+            console.log("Service Worker registered.");
+          });
+        }
       };
 
       function toggleSettings() {
-        const modal = document.getElementById("settingsModal");
-        modal.classList.toggle("hidden");
-        modal.classList.toggle("flex");
+        document.getElementById("settingsModal").classList.toggle("hidden");
+        document.getElementById("settingsModal").classList.toggle("flex");
       }
 
       function toggleAddForm() {
-        const form = document.getElementById("addForm");
-        form.classList.toggle("hidden");
+        document.getElementById("addForm").classList.toggle("hidden");
       }
 
       function applySettings() {
@@ -152,13 +116,7 @@
         if (!title) return alert("Please enter a title.");
 
         const id = Date.now();
-        const color = `linear-gradient(135deg, rgba(${random(
-          50,
-          100
-        )}, ${random(150, 255)}, ${random(200, 255)}, 0.8), rgba(${random(
-          0,
-          100
-        )}, ${random(200, 255)}, ${random(100, 200)}, 0.8))`;
+        const color = `linear-gradient(135deg, rgba(${random(50, 100)}, ${random(150, 255)}, ${random(200, 255)}, 0.8), rgba(${random(0, 100)}, ${random(200, 255)}, ${random(100, 200)}, 0.8))`;
 
         notes.push({ id, title, tag, content: "", color });
         localStorage.setItem("notes", JSON.stringify(notes));
@@ -166,8 +124,6 @@
 
         document.getElementById("noteTitle").value = "";
         document.getElementById("noteTag").value = "";
-
-        // Hide the form again on small screens
         if (window.innerWidth < 768) toggleAddForm();
       }
 
@@ -185,33 +141,24 @@
         notesContainer.innerHTML = "";
         filtered.forEach((note) => {
           const div = document.createElement("div");
-          div.className =
-            "note-card relative rounded-2xl shadow-md p-4 flex flex-col w-full sm:w-[48%] lg:w-[31%] xl:w-[23%] min-h-[150px] border border-white text-white";
+          div.className = "note-card relative rounded-2xl shadow-md p-4 flex flex-col w-full sm:w-[48%] lg:w-[31%] xl:w-[23%] min-h-[150px] border border-white text-white";
           div.setAttribute("data-id", note.id);
           div.style.background = note.color;
 
           div.innerHTML = `
-          <div class="flex justify-between items-center mb-2">
-            <div>
-              <h3 class="text-lg font-bold text-black">${note.title}</h3>
-              <p class="text-sm text-black">#${note.tag || "untagged"}</p>
+            <div class="flex justify-between items-center mb-2">
+              <div>
+                <h3 class="text-lg font-bold text-black">${note.title}</h3>
+                <p class="text-sm text-black">#${note.tag || "untagged"}</p>
+              </div>
+              <div class="flex gap-2 items-center action-buttons">
+                <button onclick="downloadSingleNote(${note.id})" class="text-blue-600 hover:text-blue-800"><i class="fas fa-download"></i></button>
+                <button onclick="deleteNote(${note.id})" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+              </div>
             </div>
-            <div class="flex gap-2 items-center action-buttons">
-              <button onclick="downloadSingleNote(${
-                note.id
-              })" class="text-blue-600 hover:text-blue-800"><i class="fas fa-download"></i></button>
-              <button onclick="deleteNote(${
-                note.id
-              })" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
-            </div>
-          </div>
-          <div id="content-${note.id}" contenteditable="true"
-            class="rich-editor bg-white text-gray-900 rounded p-2 border flex-grow shadow-inner"
-            oninput="updateContent(${note.id}); autoGrow('content-${
-            note.id
-          }')">${note.content}</div>
-        `;
-
+            <div id="content-${note.id}" contenteditable="true"
+              class="rich-editor bg-white text-gray-900 rounded p-2 border flex-grow shadow-inner"
+              oninput="updateContent(${note.id}); autoGrow('content-${note.id}')">${note.content}</div>`;
           notesContainer.appendChild(div);
           setTimeout(() => autoGrow(`content-${note.id}`), 0);
         });
@@ -225,14 +172,8 @@
       }
 
       function searchNotes() {
-        const search = document
-          .getElementById("searchInput")
-          .value.toLowerCase();
-        const filtered = notes.filter(
-          (n) =>
-            n.title.toLowerCase().includes(search) ||
-            (n.tag && n.tag.toLowerCase().includes(search))
-        );
+        const search = document.getElementById("searchInput").value.toLowerCase();
+        const filtered = notes.filter((n) => n.title.toLowerCase().includes(search) || (n.tag && n.tag.toLowerCase().includes(search)));
         renderNotes(filtered);
       }
 
@@ -246,7 +187,6 @@
         const noteCard = document.querySelector(`[data-id='${id}']`);
         const buttons = noteCard.querySelector(".action-buttons");
         buttons.style.display = "none";
-
         html2canvas(noteCard, { scale: 2, useCORS: true }).then((canvas) => {
           const link = document.createElement("a");
           link.download = `note-${id}.png`;
